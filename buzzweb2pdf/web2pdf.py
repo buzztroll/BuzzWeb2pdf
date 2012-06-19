@@ -18,7 +18,9 @@ def get_urls(contents):
         token = contents[ndx+len(needle):]
         end_dnx = token.find('"')
         token = token[:end_dnx]
-        href_list.append(token)
+        # Don't attempt to follow links to named anchors or email addresses
+        if (token.find("#") == -1) and (token[0:6] != 'mailto'):
+            href_list.append(token)
         contents = contents[ndx+len(needle):]
         lower_contents = contents.lower()
         ndx = lower_contents.find(needle)
@@ -45,7 +47,7 @@ def convert_index(url, outfile):
 def print_help():
     print """This program will convert an html document with an index into a single pdf.  It first goes to the index page and extracts every link.  It them goes to every link, converts the html doc into a pdf, and then finally joins every pdf into a dingle file"""
     print "%s <url to index> <output file name>"
-    
+
 def main():
 
     try:
@@ -61,7 +63,7 @@ def main():
     except Exception, ex:
         print_help()
         raise
-    
+
     print "Done"
     return 0
 
